@@ -3,17 +3,22 @@ package xione.fitmate.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@ToString(of = {"id", "oAuth2Id", "email", "name", "role"})
 public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String oAuth2Id;
 
     @Column(nullable = false)
     private String name;
