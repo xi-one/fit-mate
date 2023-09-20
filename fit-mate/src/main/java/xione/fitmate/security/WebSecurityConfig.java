@@ -5,45 +5,60 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import xione.fitmate.security.jwt.AuthEntryPointJwt;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import xione.fitmate.security.jwt.JwtAccessDeniedHandler;
+import xione.fitmate.security.jwt.JwtAuthenticationEntryPoint;
+import xione.fitmate.security.jwt.JwtAuthenticationFilter;
+import xione.fitmate.security.oauth2.CustomOAuth2UserService;
+import xione.fitmate.security.oauth2.OAuth2AuthenticationFailureHandler;
+import xione.fitmate.security.oauth2.OAuth2AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig {
 
-    private AuthEntryPointJwt unauthorizedHandler;
-
-    @Autowired
-    public WebSecurityConfig(AuthEntryPointJwt unauthorizedHandler) {
-        this.unauthorizedHandler = unauthorizedHandler;
-    }
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler authenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler authenticationFailureHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/auth").permitAll()
-                .antMatchers(HttpMethod.POST, "/user").permitAll()
-                .antMatchers("/status").permitAll()
-                .anyRequest().authenticated();
-
-        http.oauth2Login()
-                .userInfoEndpoint().userService(customOAuth2UserService)
+        http.cors()                     // CORS on
                 .and()
-                .successHandler(configSuccessHandler())
-                .failureHandler(configFailureHandler())
-                .permitAll();
+                .csrf().disable()           // CSRF off
+                .httpBasic().disable()      // Basic Auth off
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);    // Session off
 
-        http.authenticationProvider(authenticationProvider());
+        http.formLogin().disable()
+                .oauth2Login()
+                .authorizationEndpoint()
+                .baseUri("/oauth2/authorize")
+                .and()
+                .redirectionEndpoint()
+                .baseUri("/oauth2/callback/*")
+                .and()
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService)
+                .and()
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler(authenticationFailureHandler);
 
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)	// 401
+                .accessDeniedHandler(jwtAccessDeniedHandler);		// 403
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

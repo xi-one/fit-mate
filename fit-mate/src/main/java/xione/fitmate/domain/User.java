@@ -1,16 +1,16 @@
 package xione.fitmate.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
+@ToString
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@ToString(of = {"id", "oAuth2Id", "email", "name", "role"})
+@Table(name = "user_table")
 public class User extends BaseTimeEntity {
 
     @Id
@@ -27,23 +27,22 @@ public class User extends BaseTimeEntity {
     private String email;
 
     @Column
-    private String picture;
+    private String img;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    @Builder
-    public User(String name, String email, String picture, Role role) {
-        this.name = name;
-        this.email = email;
-        this.picture = picture;
-        this.role = role;
-    }
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider;
 
-    public User update(String name, String picture) {
+    private String refreshToken;
+
+
+
+    public User update(String name, String img) {
         this.name = name;
-        this.picture = picture;
+        this.img = img;
 
         return this;
     }
