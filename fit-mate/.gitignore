@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 application-oauth.properties
 application-jwt.properties
+application-db.properties
 
 ### STS ###
 .apt_generated
