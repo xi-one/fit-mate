@@ -13,42 +13,47 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-
+    @Value("${oauth.redirectUrlScheme}")
+    private String targetUrl;
     private final JwtProvider tokenProvider;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
-
+        System.out.println("success sssssss");
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
             log.debug("Response has already been committed");
             return;
         }
+        clearAuthenticationAttributes(request);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
-        setTargetUrlParameter("redirect-uri");
-        String targetUrl = determineTargetUrl(request, response);
 
         // JWT 생성
         String accessToken = tokenProvider.createAccessToken(authentication);
         tokenProvider.createRefreshToken(authentication);
 
+        String temp = UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("accessToken", accessToken)
+                .build().toUriString();
+
+        System.out.println(temp);
+
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accessToken", accessToken)
                 .build().toUriString();
     }
+
 
 
 

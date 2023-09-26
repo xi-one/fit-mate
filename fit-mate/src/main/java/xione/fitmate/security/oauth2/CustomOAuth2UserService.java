@@ -25,6 +25,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     // OAuth2UserRequest에 있는 Access Token으로 유저정보 get
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
+        System.out.println("testttttttttt");
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
 
         return process(oAuth2UserRequest, oAuth2User);
@@ -54,7 +55,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User createUser(OAuth2UserInfo userInfo, AuthProvider authProvider) {
+
         User user = User.builder()
+                .oAuth2Id(userInfo.getId())
+                .name(userInfo.getName())
                 .email(userInfo.getEmail())
                 .img(userInfo.getImageUrl())
                 .role(Role.USER)

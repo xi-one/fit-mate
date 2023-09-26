@@ -15,9 +15,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        String targetUrl = request.getParameter("redirect-uri");
+
+        System.out.println("failure dddd");
+        String targetUrl = "com.example.fit-mate-app";
 
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("error", exception.getLocalizedMessage())
