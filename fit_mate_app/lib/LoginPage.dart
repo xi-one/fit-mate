@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -24,6 +25,36 @@ class _LoginPageState extends State<LoginPage> {
         });
       });
     }
+  }
+
+  Future<void> signIn() async {
+    // 고유한 redirect uri
+    const APP_REDIRECT_URI = "com.example.fit-mate-app";
+
+    // 백엔드에서 미리 작성된 API 호출
+    final url =
+        Uri.parse('http://10.0.2.2.nip.io:8080/oauth2/authorize/google');
+
+    try {
+      // 백엔드가 제공한 로그인 페이지에서 로그인 후 callback 데이터 반환
+      final result = await FlutterWebAuth.authenticate(
+          url: url.toString(), callbackUrlScheme: APP_REDIRECT_URI);
+
+      // 백엔드에서 redirect한 callback 데이터 파싱
+      final accessToken = Uri.parse(result).queryParameters['accessToken'];
+      print("accessToken : ");
+      print(accessToken);
+      // . . .
+      // FlutterSecureStorage 또는 SharedPreferences 를 통한
+      // Token 저장 및 관리
+      // . . .
+    } catch (e) {
+      print(e);
+    }
+    // . . .
+    // FlutterSecureStorage 또는 SharedPreferences 를 통한
+    // Token 저장 및 관리
+    // . . .
   }
 
   @override
@@ -95,9 +126,11 @@ class _LoginPageState extends State<LoginPage> {
               Positioned(
                 bottom: MediaQuery.of(context).size.height * 0.2,
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     // 클릭 이벤트 처리
                     print("구글 로그인 버튼 클릭됨");
+                    await signIn();
+                    print("로그인 완료");
                   },
                   child: Container(
                     decoration: BoxDecoration(
