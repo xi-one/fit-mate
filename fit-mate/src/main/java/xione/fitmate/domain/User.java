@@ -3,6 +3,8 @@ package xione.fitmate.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @ToString
@@ -23,11 +25,24 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Sex sex;
+
     @Column(nullable = false)
     private String email;
 
     @Column
+    private LocalDate birth;
+
+    @Column
     private String img;
+
+    @Column
+    private Long cash;
+
+    @Column
+    private String region;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
