@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:fit_mate_app/signUp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 
 class LoginPage extends StatefulWidget {
@@ -42,8 +44,20 @@ class _LoginPageState extends State<LoginPage> {
 
       // 백엔드에서 redirect한 callback 데이터 파싱
       final accessToken = Uri.parse(result).queryParameters['accessToken'];
-      print("accessToken : ");
-      print(accessToken);
+
+      if (accessToken != null) {
+        print("accessToken : ");
+        print(accessToken);
+
+        final storage = FlutterSecureStorage();
+        await storage.write(key: "accessToken", value: accessToken);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SignUp()),
+        );
+      }
+
       // . . .
       // FlutterSecureStorage 또는 SharedPreferences 를 통한
       // Token 저장 및 관리
