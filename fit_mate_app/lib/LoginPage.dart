@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:fit_mate_app/signUp.dart';
+import 'package:fit_mate_app/UserInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SignUp()),
+          MaterialPageRoute(builder: (context) => UserInfo()),
         );
       }
 
