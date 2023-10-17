@@ -36,6 +36,9 @@ public class User extends BaseTimeEntity {
     private LocalDate birth;
 
     @Column
+    private String sports;
+
+    @Column
     private String img;
 
     @Column

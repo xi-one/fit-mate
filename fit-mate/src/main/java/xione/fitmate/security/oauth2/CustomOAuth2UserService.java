@@ -13,6 +13,7 @@ import xione.fitmate.domain.User;
 import xione.fitmate.exception.OAuthProcessingException;
 import xione.fitmate.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Log4j2
@@ -64,6 +65,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .role(Role.USER)
                 .authProvider(authProvider)
                 .build();
+        user.setCreatedDate(LocalDateTime.now());
+        user.setModifiedDate(LocalDateTime.now());
         return userRepository.save(user);
     }
 }
