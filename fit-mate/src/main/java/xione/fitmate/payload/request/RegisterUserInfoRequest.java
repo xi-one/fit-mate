@@ -15,6 +15,7 @@ public class RegisterUserInfoRequest {
     private String region;
     private LocalDate birth;
     private Sex sex;
-    private String sports;
+    private List<String> sports;
+    private String nickname;
 
 }

@@ -19,6 +19,7 @@ import xione.fitmate.service.UserInfoService;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Log4j2
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -37,17 +38,19 @@ public class UserInfoController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = Long.valueOf(userDetails.getName());
 
+        String nickname = loginRequest.getNickname();
         String region = loginRequest.getRegion();
         LocalDate birth = loginRequest.getBirth();
         Sex sex = loginRequest.getSex();
-        String sports = loginRequest.getSports();
-
-        userinfoService.register(userId, sex, birth, region, sports);
+        List<String> sports = loginRequest.getSports();
+        log.info(sports.getClass());
         log.info(userId);
         log.info(region);
         log.info(birth);
         log.info(sex);
         log.info(sports);
+        userinfoService.register(userId, nickname, sex, birth, region, sports);
+
 
 
 

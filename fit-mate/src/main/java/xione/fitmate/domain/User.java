@@ -5,8 +5,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,8 +38,12 @@ public class User extends BaseTimeEntity {
     @Column
     private LocalDate birth;
 
-    @Column
-    private String sports;
+    @ElementCollection
+    @CollectionTable(
+            name = "sports",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<String> sports;
 
     @Column
     private String img;
