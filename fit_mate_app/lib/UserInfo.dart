@@ -1,4 +1,7 @@
+import 'package:dio/dio.dart';
+import 'package:fit_mate_app/apiConstant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
@@ -22,7 +25,7 @@ class UserInfo extends StatefulWidget {
 }
 
 class _UserInfoState extends State<UserInfo> {
-  static final List<Sports> _sports = [
+  static final List<Sports?> _sports = [
     Sports(id: 1, name: "농구"),
     Sports(id: 2, name: "축구"),
     Sports(id: 3, name: "헬스"),
@@ -31,10 +34,10 @@ class _UserInfoState extends State<UserInfo> {
     Sports(id: 6, name: "배드민턴"),
   ];
   final _items = _sports
-      .map((sports) => MultiSelectItem<Sports>(sports, sports.name))
+      .map((sports) => MultiSelectItem<Sports?>(sports, sports!.name))
       .toList();
 
-  List<Sports> _selectedSports = [];
+  List<Sports?> _selectedSports = [];
 
   final _cities = ['서울/경기', '충북', '충남', '경북', '경남', '전북', '전남', '강원'];
   String? _selectedCity;
@@ -43,7 +46,7 @@ class _UserInfoState extends State<UserInfo> {
 
   //
   final TextEditingController _nicknameController = TextEditingController();
-  String _selectedGender = '남자';
+  String _selectedGender = 'MALE';
   DateTime? _selectedDate;
 
   @override
@@ -122,7 +125,7 @@ class _UserInfoState extends State<UserInfo> {
                           child: Row(
                             children: [
                               Radio<String>(
-                                value: '남자',
+                                value: 'MALE',
                                 groupValue: _selectedGender,
                                 onChanged: (value) {
                                   setState(() {
@@ -132,7 +135,7 @@ class _UserInfoState extends State<UserInfo> {
                               ),
                               Text('남자'),
                               Radio<String>(
-                                value: '여자',
+                                value: 'FEMALE',
                                 groupValue: _selectedGender,
                                 onChanged: (value) {
                                   setState(() {
@@ -206,7 +209,7 @@ class _UserInfoState extends State<UserInfo> {
                             ),
                           ),
                         ),
-                        MultiSelectBottomSheetField(
+                        MultiSelectBottomSheetField<Sports?>(
                           initialChildSize: 0.4,
                           listType: MultiSelectListType.CHIP,
                           searchable: true,
@@ -214,7 +217,7 @@ class _UserInfoState extends State<UserInfo> {
                           title: Text("Sports"),
                           items: _items,
                           onConfirm: (values) {
-                            _selectedSports = values as List<Sports>;
+                            _selectedSports = values;
                           },
                           chipDisplay: MultiSelectChipDisplay(
                             onTap: (value) {
@@ -268,10 +271,47 @@ class _UserInfoState extends State<UserInfo> {
                           margin: const EdgeInsets.only(top: 16.0),
                           alignment: Alignment.centerRight,
                           child: IconButton(
-                            onPressed: () {
+                            onPressed: () async {
                               // 폼에 입력된 값 검증
 
                               if (_formKey.currentState!.validate()) {
+                                // Flutter Secure Storage에서 JWT 토큰 읽어오기
+                                final storage = FlutterSecureStorage();
+                                String? jwtToken =
+                                    await storage.read(key: 'accessToken');
+
+                                // Dio 인스턴스 생성 및 기본 설정
+                                Dio dio = Dio(BaseOptions(
+                                  baseUrl: ApiConstants.baseUrl,
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer $jwtToken',
+                                  },
+                                ));
+                                print(_selectedSports[0]);
+                                // POST 요청 데이터 준비
+                                Map<String, dynamic> data = {
+                                  'nickname': _nicknameController.text,
+                                  'region': _selectedCity,
+                                  'birth': _selectedDate!.toIso8601String(),
+                                  'sex': _selectedGender,
+                                  'sports': _selectedSports
+                                      .map((e) => e!.name)
+                                      .toList(),
+                                  // 다른 필드들도 추가할 수 있음
+                                };
+
+                                // POST 요청 보내기
+                                try {
+                                  Response response =
+                                      await dio.post('/userinfo', data: data);
+                                  print('Response: ${response.data}');
+                                  // 요청 성공 시 처리
+                                } catch (error) {
+                                  print('Error: $error');
+                                  // 요청 실패 시 처리
+                                }
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
