@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fit_mate_app/PageList.dart';
 import 'package:fit_mate_app/apiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -315,7 +316,7 @@ class _UserInfoState extends State<UserInfo> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => UserInfo()),
+                                      builder: (context) => PageList()),
                                 );
                               }
                             },

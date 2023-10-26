@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 /// Miso 메인 색상
 Color misoPrimaryColor = Color.fromARGB(255, 38, 103, 240);
 
-class Miso extends StatefulWidget {
-  const Miso({Key? key}) : super(key: key);
+class PageList extends StatefulWidget {
+  const PageList({Key? key}) : super(key: key);
 
   @override
-  _MisoState createState() => _MisoState();
+  _PageListState createState() => _PageListState();
 }
 
-class _MisoState extends State<Miso> {
+class _PageListState extends State<PageList> {
   int currentIndex = 0;
 
   @override
@@ -39,7 +39,7 @@ class _MisoState extends State<Miso> {
         showSelectedLabels: false, // 선택된 항목 label 숨기기
         showUnselectedLabels: false, // 선택되지 않은 항목 label 숨기기
         type: BottomNavigationBarType.fixed, // 선택시 아이콘 움직이지 않기
-				backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: ""),
@@ -82,8 +82,8 @@ class MisoSecondPage extends StatelessWidget {
 /// 세 번째 페이지
 class MisoThirdPage extends StatelessWidget {
   const MisoThirdPage({Key? key}) : super(key: key);
-	
-	/// 세 번째 화면 배경 이미지 URL
+
+  /// 세 번째 화면 배경 이미지 URL
   final String backgroundImgUrl =
       "https://i.ibb.co/rxzkRTD/146201680-e1b73b36-aa1e-4c2e-8a3a-974c2e06fa9d.png";
 
