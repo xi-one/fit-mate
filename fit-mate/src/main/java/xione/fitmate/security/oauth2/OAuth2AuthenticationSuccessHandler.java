@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
+import xione.fitmate.domain.User;
+import xione.fitmate.repository.UserRepository;
 import xione.fitmate.security.jwt.JwtProvider;
 
 import javax.servlet.ServletException;
@@ -22,6 +24,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Value("${oauth.redirectUrlScheme}")
     private String targetUrl;
     private final JwtProvider tokenProvider;
+    private final UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -43,14 +46,19 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String accessToken = tokenProvider.createAccessToken(authentication);
         tokenProvider.createRefreshToken(authentication);
 
-        String temp = UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("accessToken", accessToken)
-                .build().toUriString();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = Long.valueOf(userDetails.getName());
+        User user = userRepository.findById(userId).get();
 
-        System.out.println(temp);
+        String init = "no";
+        if(user.getCash() != null) {
+            init = "yes";
+        }
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accessToken", accessToken)
+                .queryParam("user_id", userId)
+                .queryParam("init", init)
                 .build().toUriString();
     }
 
