@@ -20,6 +20,10 @@ class _PageListState extends State<PageList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Fit Mate"),
+        backgroundColor: misoPrimaryColor,
+      ),
       body: IndexedStack(
         index: currentIndex, // index 순서에 해당하는 child를 맨 위에 보여줌
         children: [
