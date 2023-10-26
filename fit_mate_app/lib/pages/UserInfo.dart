@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:fit_mate_app/PageList.dart';
+import 'package:fit_mate_app/pages/PostListPage.dart';
 import 'package:fit_mate_app/apiConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
