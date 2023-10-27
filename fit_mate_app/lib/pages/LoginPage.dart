@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:fit_mate_app/pages/PostListPage.dart';
+import 'package:fit_mate_app/pages/FramePage.dart';
 import 'package:fit_mate_app/pages/UserInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -51,6 +51,8 @@ class _LoginPageState extends State<LoginPage> {
       if (accessToken != null) {
         print("accessToken : ");
         print(accessToken);
+        print("userId : ");
+        print(userId);
 
         final storage = FlutterSecureStorage();
         await storage.write(key: "accessToken", value: accessToken);

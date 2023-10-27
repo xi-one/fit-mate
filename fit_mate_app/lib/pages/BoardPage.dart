@@ -14,6 +14,12 @@ class BoardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            print("test");
+          },
+          child: Icon(Icons.add),
+        ),
         body: FutureBuilder(
             future: _refreshPosts(context),
             builder: (context, snapshot) => snapshot.connectionState ==

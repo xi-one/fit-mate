@@ -6,8 +6,9 @@ class Post {
   final String? userId;
   final String? sports;
   final String? location;
-  final int? numOfRecruits;
-  final int? numOfParticipants;
+  final String? numOfRecruits;
+  final String? numOfParticipants;
+  final bool? isRecruiting;
 
   Post(
     this.id,
@@ -19,5 +20,6 @@ class Post {
     this.location,
     this.numOfRecruits,
     this.numOfParticipants,
+    this.isRecruiting,
   );
 }

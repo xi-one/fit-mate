@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class PostService extends ChangeNotifier {
   List<Post> _items = [
     Post("1", "testTitle", "Testcontents", DateTime(2023), "1", "basketball",
-        "location", 2, 1)
+        "location", "2", "1", true)
   ];
 
   PostService();

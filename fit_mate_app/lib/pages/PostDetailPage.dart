@@ -95,9 +95,79 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     subtitle: Text(
                       DateFormat('yy/MM/dd - HH:mm:ss').format(post.datetime!),
                     ),
+                    trailing: post.isRecruiting!
+                        ? Container(
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                color: Color.fromARGB(255, 15, 208, 189)),
+                            child: Text(
+                              '모집중',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                color: Color.fromARGB(255, 84, 84, 85)),
+                            child: Text(
+                              '모집완료',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              '종목   ',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Text(
+                              post.sports!,
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              '지역   ',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Text(
+                              post.location!,
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              '인원   ',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Text(
+                              "${post.numOfParticipants!} / ${post.numOfRecruits!}",
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                   // 내용
-
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Align(
@@ -110,6 +180,25 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ),
                   Divider(
                     thickness: 1,
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: userId == post.userId
+                        ? Column(
+                            children: [
+                              TextButton(
+                                onPressed: () {},
+                                child: Text("모집 완료"),
+                              ),
+                              Divider(
+                                thickness: 1,
+                              ),
+                            ],
+                          )
+                        : SizedBox(
+                            height: 0,
+                          ),
                   ),
 
                   // 댓글 목록
@@ -133,6 +222,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
             ),
           ),
         ),
+
+        // 댓글 입력창
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(

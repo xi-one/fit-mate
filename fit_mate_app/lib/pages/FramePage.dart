@@ -21,7 +21,8 @@ class _PageListState extends State<PageList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Fit Mate"),
+        title: Text("FitMate"),
+        automaticallyImplyLeading: false,
         backgroundColor: misoPrimaryColor,
       ),
       body: IndexedStack(
