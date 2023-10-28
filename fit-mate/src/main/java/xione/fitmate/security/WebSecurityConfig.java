@@ -38,7 +38,8 @@ public class WebSecurityConfig {
                 .and()
                 .csrf().disable()           // CSRF off
                 .httpBasic().disable()      // Basic Auth off
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);    // Session off
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);// Session off
+                //.and().authorizeRequests().anyRequest().authenticated();
 
         http.formLogin().disable()
                 .oauth2Login()
