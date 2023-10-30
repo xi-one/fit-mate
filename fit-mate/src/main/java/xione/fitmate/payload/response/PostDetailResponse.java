@@ -12,6 +12,7 @@ public class PostDetailResponse {
 
     private Long id;
     private Long userId;
+    private String writer;
     private String title;
     private String content;
     private LocalDateTime dateTime;

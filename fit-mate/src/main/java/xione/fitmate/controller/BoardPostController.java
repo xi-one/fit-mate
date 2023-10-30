@@ -59,6 +59,7 @@ public class BoardPostController {
         post.setRecruiting(true);
         post.setParticipants(new ArrayList<>());
 
+
         boardPostRepository.save(post);
 
 
@@ -92,6 +93,7 @@ public class BoardPostController {
         PostDetailResponse response = new PostDetailResponse(
                 post.getId(),
                 post.getUserId().getId(),
+                post.getUserId().getName(),
                 post.getTitle(),
                 post.getContent(),
                 post.getCreated_at(),
@@ -114,6 +116,7 @@ public class BoardPostController {
             postInfo.add( new PostDetailResponse(
                     post.getId(),
                     post.getUserId().getId(),
+                    post.getUserId().getName(),
                     post.getTitle(),
                     post.getContent(),
                     post.getCreated_at(),
