@@ -1,8 +1,10 @@
 import 'package:fit_mate_app/model/Comments.dart';
 import 'package:fit_mate_app/providers/CommentService.dart';
+import 'package:fit_mate_app/providers/ParticipantService.dart';
 import 'package:fit_mate_app/providers/PostService.dart';
 import 'package:fit_mate_app/providers/UserService.dart';
 import 'package:fit_mate_app/widgets/CommentItem.dart';
+import 'package:fit_mate_app/widgets/ParticipantItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
@@ -27,6 +29,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
     await Provider.of<PostService>(context, listen: false).fetchAndSetPosts();
     await Provider.of<CommentService>(context, listen: false)
         .fetchAndSetComments(postId);
+    await Provider.of<ParticipantService>(context, listen: false)
+        .fetchAndSetParticipants(postId);
   }
 
   @override
@@ -41,6 +45,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         .items
         .firstWhere((post) => post.id == widget.id);
     final comments = Provider.of<CommentService>(context).items;
+    final participants = Provider.of<ParticipantService>(context).items;
 
     final userId = Provider.of<UserService>(context).userId;
     print("user id : $userId");
@@ -163,10 +168,46 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 1,
+                    height: 100,
+                  ),
+
+                  // 참가자 목록
+                  Center(
+                    child: Text(
+                      "핏메이트들",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: 300,
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: ListView.builder(
+                      itemCount: participants.length,
+                      itemBuilder: (_, i) => Column(
+                        children: [
+                          ParticipantItem(participants[i].id),
+                          Divider(),
+                        ],
+                      ),
+                    ),
                   ),
 
                   // 모집 완료 / 참가 버튼
+
                   Padding(
                     padding: EdgeInsets.all(0),
                     child: userId == post.userId
@@ -176,7 +217,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 height: 1,
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  if (post.isRecruiting!) {
+                                    _setRecruiting(post.id!, userId!);
+                                  }
+                                },
                                 style: ButtonStyle(backgroundColor:
                                     MaterialStateProperty.resolveWith((states) {
                                   if (post.isRecruiting!) {
@@ -203,7 +248,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 height: 1,
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  if (post.isRecruiting!) {
+                                    _setRecruiting(post.id!, userId!);
+                                  }
+                                },
                                 style: ButtonStyle(backgroundColor:
                                     MaterialStateProperty.resolveWith((states) {
                                   if (post.isRecruiting!) {
@@ -232,7 +281,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   // 댓글 목록
                   comments.isEmpty
                       ? Center(
-                          child: Text('No commnets'),
+                          child: Text('No comments'),
                         )
                       : Column(
                           children: [
@@ -329,6 +378,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
     });
     await Provider.of<CommentService>(context, listen: false)
         .addComment(comment);
+    _refreshPosts(context, postId);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _setRecruiting(String postId, String userId) async {
+    await Provider.of<PostService>(context, listen: false)
+        .setRecruitingState(postId, userId);
+    setState(() {
+      _isLoading = true;
+    });
     _refreshPosts(context, postId);
     setState(() {
       _isLoading = false;

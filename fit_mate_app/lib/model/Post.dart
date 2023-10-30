@@ -4,6 +4,7 @@ class Post {
   final String? contents;
   final DateTime? datetime;
   final String? userId;
+  final String? writer;
   final String? sports;
   final String? location;
   final String? numOfRecruits;
@@ -16,6 +17,7 @@ class Post {
     this.contents,
     this.datetime,
     this.userId,
+    this.writer,
     this.sports,
     this.location,
     this.numOfRecruits,

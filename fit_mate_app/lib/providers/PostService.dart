@@ -94,4 +94,29 @@ class PostService extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> setRecruitingState(String postId, String userId) async {
+    final token = await storage.read(key: "accessToken");
+    Dio dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ));
+    Map<String, dynamic> data = {
+      'userId': int.parse(userId),
+      'postId': int.parse(postId),
+      'isRecruiting': false,
+    };
+
+    try {
+      final response = await dio.post("/board/recruiting", data: data);
+      print(response.data);
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+    notifyListeners();
+  }
 }
