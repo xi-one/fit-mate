@@ -46,7 +46,7 @@ public class BoardCommentController {
         Long userId = Long.valueOf(userDetails.getName());
 
         if(!userId.equals(commentRequest.getUserId())) {
-            throw new IllegalArgumentException("user Id is different");
+            throw new IllegalArgumentException("user Id is different: " + userId + " " + commentRequest.getUserId());
         }
 
         String content = commentRequest.getContent();
