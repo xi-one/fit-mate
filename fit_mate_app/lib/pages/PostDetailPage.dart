@@ -1,4 +1,5 @@
 import 'package:fit_mate_app/model/Comments.dart';
+import 'package:fit_mate_app/model/Participant.dart';
 import 'package:fit_mate_app/providers/CommentService.dart';
 import 'package:fit_mate_app/providers/ParticipantService.dart';
 import 'package:fit_mate_app/providers/PostService.dart';
@@ -254,19 +255,24 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               TextButton(
                                 onPressed: () {
                                   if (post.isRecruiting!) {
-                                    _setRecruiting(post.id!, userId!);
+                                    if (!participants
+                                        .contains(Participant(id: userId))) {
+                                      _addParticipant(post.id!, userId!);
+                                    }
                                   }
                                 },
                                 style: ButtonStyle(backgroundColor:
                                     MaterialStateProperty.resolveWith((states) {
                                   if (post.isRecruiting!) {
-                                    return Colors.green;
+                                    return Colors.lightBlue;
                                   } else {
-                                    return Colors.red;
+                                    return Colors.grey;
                                   }
                                 })),
                                 child: Text(
-                                  "참가",
+                                  participants.contains(Participant(id: userId))
+                                      ? "취소"
+                                      : "참가",
                                   style: TextStyle(
                                     color: Colors.white,
                                   ),
@@ -386,6 +392,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<void> _addParticipant(String postId, String userId) async {
+    await Provider.of<ParticipantService>(context, listen: false)
+        .addParticipant(postId, userId);
+    _refreshPosts(context, postId);
   }
 
   Future<void> _setRecruiting(String postId, String userId) async {

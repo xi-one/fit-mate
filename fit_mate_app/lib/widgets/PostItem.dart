@@ -1,5 +1,6 @@
 import 'package:fit_mate_app/pages/PostDetailPage.dart';
 import 'package:fit_mate_app/providers/CommentService.dart';
+import 'package:fit_mate_app/providers/ParticipantService.dart';
 import 'package:fit_mate_app/providers/PostService.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -35,6 +36,8 @@ class PostItem extends StatelessWidget {
       onTap: () async {
         await Provider.of<CommentService>(context, listen: false)
             .fetchAndSetComments(id!);
+        await Provider.of<ParticipantService>(context, listen: false)
+            .fetchAndSetParticipants(id!);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PostDetailPage(id!)),

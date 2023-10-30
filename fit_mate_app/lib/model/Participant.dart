@@ -4,9 +4,12 @@ class Participant {
   final String? imgUrl;
   final String? postId;
 
-  Participant(
-      {required this.id,
-      required this.name,
-      required this.imgUrl,
-      required this.postId});
+  Participant({this.id, this.name, this.imgUrl, this.postId});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Participant &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
 }

@@ -1,11 +1,11 @@
+import 'package:dio/dio.dart';
+import 'package:fit_mate_app/apiConstant.dart';
 import 'package:fit_mate_app/model/Participant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ParticipantService extends ChangeNotifier {
-  List<Participant> _items = [
-    Participant(id: '1', name: 'name', imgUrl: 'imgUrl', postId: '1')
-  ];
+  List<Participant> _items = [];
   final storage = FlutterSecureStorage();
   ParticipantService();
 
@@ -16,5 +16,64 @@ class ParticipantService extends ChangeNotifier {
     return [..._items];
   }
 
-  Future<void> fetchAndSetParticipants(String postId) async {}
+  Future<void> fetchAndSetParticipants(String postId) async {
+    final token = await storage.read(key: "accessToken");
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ));
+
+    try {
+      final response = await dio.get("/participant/$postId");
+
+      final participants = response.data["participants"];
+      if (participants == null) {
+        return;
+      }
+
+      final List<Participant> loadedParticipants = [];
+      participants.forEach((participant) {
+        loadedParticipants.add(Participant(
+          id: participant['userId'].toString(),
+          name: participant['name'],
+          imgUrl: participant['img'],
+          postId: postId,
+        ));
+      });
+      _items = [];
+      _items = loadedParticipants;
+      notifyListeners();
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<void> addParticipant(String postId, String userId) async {
+    final token = await storage.read(key: "accessToken");
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ));
+    Map<String, dynamic> data = {
+      'userId': userId,
+      'postId': postId,
+    };
+
+    try {
+      final response = await dio.post("/participant", data: data);
+      print(response.data);
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+    notifyListeners();
+  }
 }

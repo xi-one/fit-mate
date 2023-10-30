@@ -60,6 +60,90 @@ class PostService extends ChangeNotifier {
     }
   }
 
+  Future<void> fetchAndSetMyPosts(String userId) async {
+    final token = await storage.read(key: "accessToken");
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ));
+
+    try {
+      final response = await dio.get("/board/$userId");
+
+      final posts = response.data["posts"];
+      if (posts == null) {
+        return;
+      }
+
+      final List<Post> loadedPosts = [];
+      posts.forEach((post) {
+        loadedPosts.add(Post(
+            id: post['id'].toString(),
+            title: post['title'],
+            contents: post['content'],
+            datetime: DateTime.parse(post['dateTime']),
+            userId: post['userId'].toString(),
+            writer: post['writer'],
+            sports: post['sports'],
+            location: post['location'],
+            numOfRecruits: post['numOfRecruits'].toString(),
+            numOfParticipants: post['numOfParticipants'].toString(),
+            isRecruiting: post['recruiting']));
+      });
+      _items = [];
+      _items = loadedPosts;
+      notifyListeners();
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<void> fetchAndSetParticipatedPosts(String userId) async {
+    final token = await storage.read(key: "accessToken");
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ));
+
+    try {
+      final response = await dio.get("/board/participate/$userId");
+
+      final posts = response.data["posts"];
+      if (posts == null) {
+        return;
+      }
+
+      final List<Post> loadedPosts = [];
+      posts.forEach((post) {
+        loadedPosts.add(Post(
+            id: post['id'].toString(),
+            title: post['title'],
+            contents: post['content'],
+            datetime: DateTime.parse(post['dateTime']),
+            userId: post['userId'].toString(),
+            writer: post['writer'],
+            sports: post['sports'],
+            location: post['location'],
+            numOfRecruits: post['numOfRecruits'].toString(),
+            numOfParticipants: post['numOfParticipants'].toString(),
+            isRecruiting: post['recruiting']));
+      });
+      _items = [];
+      _items = loadedPosts;
+      notifyListeners();
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future<void> updatePost(String postId, Post post) async {}
   Future<void> addPost(
     Post post,
