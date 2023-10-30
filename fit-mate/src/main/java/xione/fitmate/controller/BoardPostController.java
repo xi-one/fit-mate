@@ -1,6 +1,7 @@
 package xione.fitmate.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import xione.fitmate.domain.BoardPost;
 import xione.fitmate.domain.Sex;
 import xione.fitmate.domain.User;
+import xione.fitmate.domain.UserPost;
 import xione.fitmate.payload.request.RegisterPostRequest;
 import xione.fitmate.payload.request.RegisterUserInfoRequest;
 import xione.fitmate.payload.request.SetRecruitingRequest;
@@ -17,6 +19,7 @@ import xione.fitmate.payload.response.PostDetailResponse;
 import xione.fitmate.payload.response.StatusResponse;
 import xione.fitmate.payload.response.UserInfoResponse;
 import xione.fitmate.repository.BoardPostRepository;
+import xione.fitmate.repository.UserPostRepository;
 import xione.fitmate.repository.UserRepository;
 import xione.fitmate.security.oauth2.CustomUserDetails;
 import xione.fitmate.service.UserInfoService;
@@ -25,7 +28,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+@Log4j2
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/board")
@@ -34,6 +37,7 @@ public class BoardPostController {
 
     private final UserRepository userRepository;
     private final BoardPostRepository boardPostRepository;
+    private final UserPostRepository userPostRepository;
 
 
     @PostMapping
@@ -57,10 +61,10 @@ public class BoardPostController {
         post.setSports(postRequest.getSports());
         post.setNumOfRecruits(postRequest.getNumOfRecruits());
         post.setRecruiting(true);
-        post.setParticipants(new ArrayList<>());
 
-
-        boardPostRepository.save(post);
+        BoardPost result = boardPostRepository.save(post);
+        UserPost userpost = new UserPost(user, result);
+        userPostRepository.save(userpost);
 
 
         return ResponseEntity.status(HttpStatus.OK).body(new StatusResponse("post registered successfully!"));    }

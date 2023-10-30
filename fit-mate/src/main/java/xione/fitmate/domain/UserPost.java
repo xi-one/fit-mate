@@ -25,4 +25,9 @@ public class UserPost {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private BoardPost post;
+
+    public UserPost(User user, BoardPost post) {
+        this.user = user;
+        this.post = post;
+    }
 }
