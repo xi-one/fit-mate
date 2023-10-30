@@ -45,6 +45,7 @@ class PostService extends ChangeNotifier {
             contents: post['content'],
             datetime: DateTime.parse(post['dateTime']),
             userId: post['userId'].toString(),
+            writer: post['writer'],
             sports: post['sports'],
             location: post['location'],
             numOfRecruits: post['numOfRecruits'].toString(),

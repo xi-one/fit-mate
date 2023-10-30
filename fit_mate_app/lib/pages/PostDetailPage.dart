@@ -83,7 +83,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         ),
                       ),
                     ),
-                    title: Text('익명'),
+                    title: Text(
+                      post.writer!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     subtitle: Text(
                       DateFormat('yy/MM/dd - HH:mm:ss').format(post.datetime!),
                     ),
