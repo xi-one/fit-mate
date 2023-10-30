@@ -1,3 +1,5 @@
+import 'package:fit_mate_app/pages/EditPostPage.dart';
+import 'package:fit_mate_app/providers/UserService.dart';
 import 'package:fit_mate_app/widgets/PostItem.dart';
 import 'package:fit_mate_app/providers/PostService.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ class BoardPage extends StatelessWidget {
 
   Future<void> _refreshPosts(BuildContext context) async {
     await Provider.of<PostService>(context, listen: false).fetchAndSetPosts();
+    await Provider.of<UserService>(context, listen: false).fetchAndSetUser();
   }
 
   @override
@@ -16,7 +19,10 @@ class BoardPage extends StatelessWidget {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            print("test");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EditPostPage(null)),
+            );
           },
           child: Icon(Icons.add),
         ),

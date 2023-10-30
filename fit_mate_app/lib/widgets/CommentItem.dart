@@ -38,7 +38,7 @@ class CommentItem extends StatelessWidget {
                   ),
                 ),
                 title: Text(
-                  comment.userName!.substring(0, 5) + '***' + '-   ' + dt,
+                  comment.userName! + "   " + dt,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),

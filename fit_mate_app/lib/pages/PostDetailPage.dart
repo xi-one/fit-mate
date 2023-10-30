@@ -1,6 +1,7 @@
 import 'package:fit_mate_app/model/Comments.dart';
 import 'package:fit_mate_app/providers/CommentService.dart';
 import 'package:fit_mate_app/providers/PostService.dart';
+import 'package:fit_mate_app/providers/UserService.dart';
 import 'package:fit_mate_app/widgets/CommentItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -8,8 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PostDetailPage extends StatefulWidget {
-  final String id;
-
+  final id;
   const PostDetailPage(this.id, {Key? key}) : super(key: key);
 
   @override
@@ -22,23 +22,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _commentTextEditController = TextEditingController();
   final storage = FlutterSecureStorage();
-  String? userId;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncInitState();
-    });
-  }
-
-  _asyncInitState() async {
-    userId = await storage.read(key: "userId");
-    if (userId == null) {
-      print("userId is null");
-    }
-  }
 
   Future<void> _refreshPosts(BuildContext context, String postId) async {
     await Provider.of<PostService>(context, listen: false).fetchAndSetPosts();
@@ -58,6 +41,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
         .items
         .firstWhere((post) => post.id == widget.id);
     final comments = Provider.of<CommentService>(context).items;
+
+    final userId = Provider.of<UserService>(context).userId;
+    print("user id : $userId");
+    print("post user id: ${post.userId}");
 
     return Scaffold(
       appBar: AppBar(
@@ -178,27 +165,68 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   SizedBox(
                     height: 1,
                   ),
-                  Divider(
-                    thickness: 1,
-                  ),
 
+                  // 모집 완료 / 참가 버튼
                   Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(0),
                     child: userId == post.userId
                         ? Column(
                             children: [
+                              SizedBox(
+                                height: 1,
+                              ),
                               TextButton(
                                 onPressed: () {},
-                                child: Text("모집 완료"),
+                                style: ButtonStyle(backgroundColor:
+                                    MaterialStateProperty.resolveWith((states) {
+                                  if (post.isRecruiting!) {
+                                    return Colors.green;
+                                  } else {
+                                    return Colors.grey;
+                                  }
+                                })),
+                                child: Text(
+                                  "모집 완료",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
-                              Divider(
-                                thickness: 1,
+                              SizedBox(
+                                height: 1,
                               ),
                             ],
                           )
-                        : SizedBox(
-                            height: 0,
+                        : Column(
+                            children: [
+                              SizedBox(
+                                height: 1,
+                              ),
+                              TextButton(
+                                onPressed: () {},
+                                style: ButtonStyle(backgroundColor:
+                                    MaterialStateProperty.resolveWith((states) {
+                                  if (post.isRecruiting!) {
+                                    return Colors.green;
+                                  } else {
+                                    return Colors.red;
+                                  }
+                                })),
+                                child: Text(
+                                  "참가",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 1,
+                              ),
+                            ],
                           ),
+                  ),
+                  Divider(
+                    thickness: 1,
                   ),
 
                   // 댓글 목록
@@ -293,7 +321,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     final comment = Comment(
         contents: contents,
         postId: postId,
-        userId: null,
+        userId: Provider.of<UserService>(context, listen: false).userId,
         datetime: null,
         id: null);
     setState(() {

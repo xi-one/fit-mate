@@ -10,7 +10,7 @@ class Post {
   final String? numOfParticipants;
   final bool? isRecruiting;
 
-  Post(
+  Post({
     this.id,
     this.title,
     this.contents,
@@ -21,5 +21,5 @@ class Post {
     this.numOfRecruits,
     this.numOfParticipants,
     this.isRecruiting,
-  );
+  });
 }
