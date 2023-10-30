@@ -8,24 +8,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import xione.fitmate.domain.BoardPost;
-import xione.fitmate.domain.Sex;
 import xione.fitmate.domain.User;
 import xione.fitmate.domain.UserPost;
 import xione.fitmate.payload.request.RegisterPostRequest;
-import xione.fitmate.payload.request.RegisterUserInfoRequest;
 import xione.fitmate.payload.request.SetRecruitingRequest;
-import xione.fitmate.payload.response.AllPostsResponse;
+import xione.fitmate.payload.response.PostsResponse;
 import xione.fitmate.payload.response.PostDetailResponse;
 import xione.fitmate.payload.response.StatusResponse;
-import xione.fitmate.payload.response.UserInfoResponse;
 import xione.fitmate.repository.BoardPostRepository;
 import xione.fitmate.repository.UserPostRepository;
 import xione.fitmate.repository.UserRepository;
 import xione.fitmate.security.oauth2.CustomUserDetails;
-import xione.fitmate.service.UserInfoService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 @Log4j2
@@ -89,35 +84,15 @@ public class BoardPostController {
         return ResponseEntity.status(HttpStatus.OK).body(new StatusResponse("change state of recruiting successfully!"));
     }
 
-    @GetMapping("/{post_id}")
-    public ResponseEntity<?> readPostInfo( @PathVariable Long post_id) {
-        BoardPost post = boardPostRepository.findById(post_id).orElseThrow(IllegalAccessError::new);
+    @GetMapping("/{user_id}")
+    public ResponseEntity<?> readMyPostInfo( @PathVariable Long user_id) {
+        User user = userRepository.findById(user_id).orElseThrow(IllegalAccessError::new);
+        List<BoardPost> posts = boardPostRepository.findAllByUserId(user);
 
-
-        PostDetailResponse response = new PostDetailResponse(
-                post.getId(),
-                post.getUserId().getId(),
-                post.getUserId().getName(),
-                post.getTitle(),
-                post.getContent(),
-                post.getCreated_at(),
-                post.getSports(),
-                post.getLocation(),
-                post.getNumOfRecruits(),
-                post.getParticipants().size(),
-                post.isRecruiting()
-        );
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    @GetMapping
-    public ResponseEntity<?> getAllPost() {
-        List<BoardPost> posts = boardPostRepository.findAll();
 
         List<PostDetailResponse> postInfo = new ArrayList<>();
-        for(int i = 0; i < posts.size(); i++) {
-            BoardPost post = posts.get(i);
-            postInfo.add( new PostDetailResponse(
+        for (BoardPost post : posts) {
+            postInfo.add(new PostDetailResponse(
                     post.getId(),
                     post.getUserId().getId(),
                     post.getUserId().getName(),
@@ -133,7 +108,60 @@ public class BoardPostController {
         }
 
 
-        AllPostsResponse response = new AllPostsResponse(postInfo);
+        PostsResponse response = new PostsResponse(postInfo);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/participate/{user_id}")
+    public ResponseEntity<?> readParticipatedPostInfo(@PathVariable Long user_id) {
+        User user = userRepository.findById(user_id).orElseThrow(IllegalAccessError::new);
+        List<BoardPost> posts = userPostRepository.getPostByUser(user);
+
+        List<PostDetailResponse> postInfo = new ArrayList<>();
+        for (BoardPost post : posts) {
+            postInfo.add(new PostDetailResponse(
+                    post.getId(),
+                    post.getUserId().getId(),
+                    post.getUserId().getName(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getCreated_at(),
+                    post.getSports(),
+                    post.getLocation(),
+                    post.getNumOfRecruits(),
+                    post.getParticipants().size(),
+                    post.isRecruiting()
+            ));
+        }
+
+
+        PostsResponse response = new PostsResponse(postInfo);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllPost() {
+        List<BoardPost> posts = boardPostRepository.findAll();
+
+        List<PostDetailResponse> postInfo = new ArrayList<>();
+        for (BoardPost post : posts) {
+            postInfo.add(new PostDetailResponse(
+                    post.getId(),
+                    post.getUserId().getId(),
+                    post.getUserId().getName(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getCreated_at(),
+                    post.getSports(),
+                    post.getLocation(),
+                    post.getNumOfRecruits(),
+                    post.getParticipants().size(),
+                    post.isRecruiting()
+            ));
+        }
+
+
+        PostsResponse response = new PostsResponse(postInfo);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class AllPostsResponse {
+public class PostsResponse {
 
     List<PostDetailResponse> posts;
 }

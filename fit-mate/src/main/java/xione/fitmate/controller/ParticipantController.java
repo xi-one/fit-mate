@@ -35,7 +35,7 @@ public class ParticipantController {
     final UserPostRepository userPostRepository;
 
     @PostMapping
-    public ResponseEntity<?> registerParticipant(@Valid @RequestBody RegisterParticipantRequest participantRequest) {
+    public ResponseEntity<?> registerParticipant(@Valid @RequestBody RegisterParticipantRequest participantRequest) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = Long.valueOf(userDetails.getName());
@@ -46,13 +46,23 @@ public class ParticipantController {
         User user = userRepository.findById(participantRequest.getUserId()).orElseThrow(IllegalAccessError::new);
         BoardPost post = boardPostRepository.findById(participantRequest.getPostId())
                 .orElseThrow(IllegalAccessError::new);
+        if(!post.isRecruiting()) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new StatusResponse("recruit ended"));
+        }
+
+        if(post.getNumOfRecruits() <= post.getParticipants().size()) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new StatusResponse("num of recruits is full"));
+        }
+        if(userPostRepository.existsByUserAndPost(user, post)) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new StatusResponse("duplicated"));
+        }
+
 
         UserPost userPost = new UserPost(user, post);
-
         userPostRepository.save(userPost);
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(new StatusResponse("participant registered successfully!"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new StatusResponse("participant registered successfully!"));
     }
 
     @GetMapping("/{post_id}")
