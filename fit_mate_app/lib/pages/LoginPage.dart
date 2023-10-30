@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:fit_mate_app/UserInfo.dart';
+import 'package:fit_mate_app/pages/FramePage.dart';
+import 'package:fit_mate_app/pages/UserInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
@@ -44,17 +45,23 @@ class _LoginPageState extends State<LoginPage> {
 
       // 백엔드에서 redirect한 callback 데이터 파싱
       final accessToken = Uri.parse(result).queryParameters['accessToken'];
+      final userId = Uri.parse(result).queryParameters['user_id'];
+      final init = Uri.parse(result).queryParameters['init'];
 
       if (accessToken != null) {
         print("accessToken : ");
         print(accessToken);
+        print("userId : ");
+        print(userId);
 
         final storage = FlutterSecureStorage();
         await storage.write(key: "accessToken", value: accessToken);
+        await storage.write(key: "userId", value: userId);
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UserInfo()),
+          MaterialPageRoute(
+              builder: (context) => init == "no" ? UserInfo() : PageList()),
         );
       }
 

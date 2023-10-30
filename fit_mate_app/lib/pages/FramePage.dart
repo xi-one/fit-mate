@@ -1,3 +1,7 @@
+import 'package:fit_mate_app/pages/BoardPage.dart';
+import 'package:fit_mate_app/pages/MyPage.dart';
+import 'package:fit_mate_app/pages/MyPostPage.dart';
+import 'package:fit_mate_app/pages/RewardPage.dart';
 import 'package:flutter/material.dart';
 
 /// Miso 메인 색상
@@ -16,13 +20,18 @@ class _PageListState extends State<PageList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("FitMate"),
+        automaticallyImplyLeading: false,
+        backgroundColor: misoPrimaryColor,
+      ),
       body: IndexedStack(
         index: currentIndex, // index 순서에 해당하는 child를 맨 위에 보여줌
         children: [
-          MisoFirstPage(),
-          MisoSecondPage(),
-          MisoThirdPage(),
-          MisoFourthPage(),
+          BoardPage(),
+          MyPostPage(),
+          RewardPage(),
+          MyPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -46,66 +55,6 @@ class _PageListState extends State<PageList> {
           BottomNavigationBarItem(icon: Icon(Icons.redeem), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
         ],
-      ),
-    );
-  }
-}
-
-/// 첫 번째 페이지
-class MisoFirstPage extends StatelessWidget {
-  const MisoFirstPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text("Miso 첫 번째 페이지"),
-      ),
-    );
-  }
-}
-
-/// 두 번째 페이지
-class MisoSecondPage extends StatelessWidget {
-  const MisoSecondPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text("Miso 두 번째 페이지"),
-      ),
-    );
-  }
-}
-
-/// 세 번째 페이지
-class MisoThirdPage extends StatelessWidget {
-  const MisoThirdPage({Key? key}) : super(key: key);
-
-  /// 세 번째 화면 배경 이미지 URL
-  final String backgroundImgUrl =
-      "https://i.ibb.co/rxzkRTD/146201680-e1b73b36-aa1e-4c2e-8a3a-974c2e06fa9d.png";
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text("Miso 세 번째 페이지"),
-      ),
-    );
-  }
-}
-
-/// 네 번째 페이지
-class MisoFourthPage extends StatelessWidget {
-  const MisoFourthPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text("Miso 네 번째 페이지"),
       ),
     );
   }
