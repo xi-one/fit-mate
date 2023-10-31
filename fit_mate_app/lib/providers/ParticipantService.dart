@@ -29,16 +29,12 @@ class ParticipantService extends ChangeNotifier {
 
     try {
       final response = await dio.get("/participant/$postId");
-      print("------------------participant test------------------");
-      print(response.data);
       final participants = response.data["participants"];
-      print("------------------participant test------------------");
+
       if (participants == null) {
         return;
       }
-      print("------------------participant test------------------");
-      print(participants[1]['rewarded']);
-      print("------------------participant test------------------");
+
       final List<Participant> loadedParticipants = [];
       participants.forEach((participant) {
         loadedParticipants.add(
