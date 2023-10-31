@@ -73,7 +73,7 @@ public class ParticipantController {
         List<Participant> participants = new ArrayList<>();
         for (UserPost userPost : userPostList) {
             User user = userPost.getUser();
-            participants.add(new Participant(user.getId(), user.getName(), user.getImg()));
+            participants.add(new Participant(user.getId(), user.getName(), user.getImg(), userPost.getIsRewarded()));
         }
 
         ParticipantsResponse response = new ParticipantsResponse(

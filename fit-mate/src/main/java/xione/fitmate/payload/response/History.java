@@ -4,12 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class Participant {
+public class History {
+    private Long id;
     private Long userId;
-    private String name;
-    private String img;
-    private boolean isRewarded;
+    private String content;
+    private LocalDateTime dateTime;
+    private Long amount;
+
 }

@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class Participant {
-    private Long userId;
-    private String name;
-    private String img;
-    private boolean isRewarded;
+public class TokenHistoryResponse {
+
+    private List<History> HistoryList;
 }

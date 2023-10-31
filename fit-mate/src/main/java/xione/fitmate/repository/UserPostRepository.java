@@ -16,4 +16,6 @@ public interface UserPostRepository extends JpaRepository<UserPost, Long> {
     @Query("SELECT u.post FROM UserPost u WHERE u.user=:user")
     List<BoardPost> getPostByUser(@Param("user") User user);
 
+    UserPost findByUserAndPost(User user, BoardPost post);
+
 }

@@ -204,7 +204,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       itemCount: participants.length,
                       itemBuilder: (_, i) => Column(
                         children: [
-                          ParticipantItem(participants[i].id),
+                          ParticipantItem(
+                            participants[i].id,
+                            onRefresh: () {
+                              _refreshPosts(context, widget.id);
+                            },
+                          ),
                           Divider(),
                         ],
                       ),

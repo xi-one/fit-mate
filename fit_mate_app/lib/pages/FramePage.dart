@@ -21,7 +21,7 @@ class _PageListState extends State<PageList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("FitMate"),
+        title: Center(child: Text("FitMate")),
         automaticallyImplyLeading: false,
         backgroundColor: misoPrimaryColor,
       ),
@@ -37,7 +37,6 @@ class _PageListState extends State<PageList> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex, // 현재 보여주는 탭
         onTap: (newIndex) {
-          print("selected newIndex : $newIndex");
           // 다른 페이지로 이동
           setState(() {
             currentIndex = newIndex;
