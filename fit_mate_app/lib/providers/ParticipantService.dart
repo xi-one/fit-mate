@@ -34,15 +34,19 @@ class ParticipantService extends ChangeNotifier {
       if (participants == null) {
         return;
       }
+      print(participants);
 
       final List<Participant> loadedParticipants = [];
       participants.forEach((participant) {
-        loadedParticipants.add(Participant(
-          id: participant['userId'].toString(),
-          name: participant['name'],
-          imgUrl: participant['img'],
-          postId: postId,
-        ));
+        loadedParticipants.add(
+          Participant(
+            id: participant['userId'].toString(),
+            name: participant['name'],
+            imgUrl: participant['img'],
+            postId: postId,
+            isRewarded: participant['rewarded'],
+          ),
+        );
       });
       _items = [];
       _items = loadedParticipants;
