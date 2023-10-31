@@ -30,7 +30,6 @@ public class TokenHistory {
     private LocalDateTime created_at;
 
     @ManyToOne
-    @Column(nullable = false)
     private User user;
 
     public TokenHistory(Long amount, String content, User user) {
