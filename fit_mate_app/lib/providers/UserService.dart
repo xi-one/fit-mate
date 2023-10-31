@@ -11,6 +11,8 @@ class UserService extends ChangeNotifier {
   String? _location;
   List<String>? _sports;
   String? _cash;
+  String? _sex;
+  DateTime? _birth;
 
   String? get userId {
     return _userId;
@@ -38,6 +40,14 @@ class UserService extends ChangeNotifier {
 
   String? get cash {
     return _cash;
+  }
+
+  DateTime? get birth {
+    return _birth;
+  }
+
+  String? get sex {
+    return _sex;
   }
 
   Future<void> fetchAndSetUser() async {
@@ -69,6 +79,8 @@ class UserService extends ChangeNotifier {
       _email = user['email'];
       _location = user['region'];
       _cash = user['cash'].toString();
+      _sex = user['sex'];
+      _birth = DateTime.parse((user['birth']));
 
       List<String> loadedSports = [];
       for (var item in user['sports']) {
