@@ -26,8 +26,12 @@ public class UserPost {
     @JoinColumn(name = "post_id")
     private BoardPost post;
 
+    @Column(nullable = false)
+    private Boolean isRewarded;
+
     public UserPost(User user, BoardPost post) {
         this.user = user;
         this.post = post;
+        this.isRewarded = false;
     }
 }

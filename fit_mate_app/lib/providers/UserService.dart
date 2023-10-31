@@ -10,6 +10,7 @@ class UserService extends ChangeNotifier {
   String? _email;
   String? _location;
   List<String>? _sports;
+  String? _cash;
 
   String? get userId {
     return _userId;
@@ -35,6 +36,10 @@ class UserService extends ChangeNotifier {
     return _sports;
   }
 
+  String? get cash {
+    return _cash;
+  }
+
   Future<void> fetchAndSetUser() async {
     final storage = FlutterSecureStorage();
     final token = await storage.read(key: "accessToken");
@@ -50,17 +55,30 @@ class UserService extends ChangeNotifier {
 
     try {
       final response = await dio.get("/userinfo/$userId");
+      print("test");
       print(response.data);
+
       final user = response.data;
+      print(user['cash'].toString());
       if (user == null) {
         return;
       }
+
       _userId = user['id'].toString();
       _imgUrl = user['img'];
       _name = user['name'];
+
       _email = user['email'];
-      _location = user['location'];
-      _sports = user['sports'];
+      _location = user['region'];
+      _cash = user['cash'].toString();
+
+      List<String> loadedSports = [];
+      for (var item in user['sports']) {
+        if (item is String) {
+          loadedSports.add(item);
+        }
+      }
+      _sports = loadedSports;
 
       notifyListeners();
     } catch (e) {
