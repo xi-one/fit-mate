@@ -14,5 +14,6 @@ public class History {
     private Long userId;
     private String content;
     private LocalDateTime dateTime;
+    private Long amount;
 
 }

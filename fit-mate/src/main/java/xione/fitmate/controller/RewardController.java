@@ -116,7 +116,8 @@ public class RewardController {
                     history.getId(),
                     history.getUser().getId(),
                     history.getContent(),
-                    history.getCreated_at()
+                    history.getCreated_at(),
+                    history.getAmount()
             ));
         }
 
