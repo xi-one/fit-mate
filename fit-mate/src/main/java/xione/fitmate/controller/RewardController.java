@@ -26,6 +26,8 @@ import xione.fitmate.web3.Web3jService;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 @Log4j2
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -47,9 +49,12 @@ public class RewardController {
         if(!userId.equals(rewardRequest.getUserId())) {
             throw new IllegalArgumentException("user Id is different");
         }
-        User user = userRepository.findById(rewardRequest.getUserId()).orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findById(rewardRequest.getReceiverUserId()).orElseThrow(IllegalAccessError::new);
         BoardPost post = boardPostRepository.findById(rewardRequest.getPostId()).orElseThrow(IllegalAccessError::new);
         UserPost userPost = userPostRepository.findByUserAndPost(user, post);
+        if(!Objects.equals(post.getUserId().getId(), rewardRequest.getUserId())) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new StatusResponse("userId of request is different from userId of the post"));
+        }
 
         if(userPost.getIsRewarded()) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(new StatusResponse("already rewarded"));

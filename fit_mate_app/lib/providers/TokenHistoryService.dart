@@ -85,4 +85,34 @@ class TokenHistoryService extends ChangeNotifier {
     notifyListeners();
     return result;
   }
+
+  Future<void> rewardParticipant(
+      String userId, String receiverId, String postId) async {
+    print("rewardParticipant");
+    print("userId: $userId, receiverId: $receiverId, postId: $postId");
+    final token = await storage.read(key: "accessToken");
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ));
+    Map<String, dynamic> data = {
+      'userId': int.parse(userId),
+      'receiverUserId': int.parse(receiverId),
+      'postId': int.parse(postId),
+    };
+
+    try {
+      final response = await dio.post("/reward", data: data);
+      print(response.data);
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+
+    notifyListeners();
+  }
 }
