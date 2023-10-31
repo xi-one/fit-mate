@@ -1,40 +1,50 @@
 import 'package:fit_mate_app/providers/TokenHistoryService.dart';
 import 'package:fit_mate_app/providers/UserService.dart';
+import 'package:fit_mate_app/widgets/EthereumAddressInputDialog.dart';
 import 'package:fit_mate_app/widgets/TokenHistoryItem.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 /// 세 번째 페이지
-class RewardPage extends StatelessWidget {
+class RewardPage extends StatefulWidget {
   const RewardPage({Key? key}) : super(key: key);
 
-  /// 세 번째 화면 배경 이미지 URL
-  final String backgroundImgUrl =
-      "https://i.ibb.co/rxzkRTD/146201680-e1b73b36-aa1e-4c2e-8a3a-974c2e06fa9d.png";
+  @override
+  State<RewardPage> createState() => _RewardPageState();
+}
 
-  Future<void> _refreshHistory(BuildContext context) async {}
+class _RewardPageState extends State<RewardPage> {
+  bool _isLoading = false;
+  Future<void> _refreshHistory(BuildContext context, String userId) async {
+    await Provider.of<UserService>(context, listen: false).fetchAndSetUser();
+    await Provider.of<TokenHistoryService>(context, listen: false)
+        .fetchAndSetHistory(userId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    String cash = Provider.of<UserService>(context, listen: false).cash ?? "0";
+    String userId =
+        Provider.of<UserService>(context, listen: false).userId ?? "0";
     return Scaffold(
       body: FutureBuilder(
-        future: _refreshHistory(context),
+        future: _refreshHistory(context, userId),
         builder: (context, snapshot) => snapshot.connectionState ==
                 ConnectionState.waiting
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : RefreshIndicator(
-                onRefresh: () => _refreshHistory(context),
-                child: Consumer<TokenHistoryService>(
-                    builder: (ctx, historyData, _) {
-                  return SafeArea(
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: EdgeInsets.all(15.0),
-                        child: SingleChildScrollView(
+            : _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () => _refreshHistory(context, userId),
+                    child: Consumer<TokenHistoryService>(
+                        builder: (ctx, historyData, _) {
+                      return SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.all(15.0),
                           child: Column(children: [
                             SizedBox(
                               height: 50,
@@ -54,7 +64,10 @@ class RewardPage extends StatelessWidget {
                               textBaseline: TextBaseline.alphabetic,
                               children: [
                                 Text(
-                                  cash,
+                                  Provider.of<UserService>(context,
+                                              listen: false)
+                                          .cash ??
+                                      "0",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 50,
@@ -75,7 +88,45 @@ class RewardPage extends StatelessWidget {
                             ),
                             Center(
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  EthereumAddressInputDialog()
+                                      .show(context)
+                                      .then((address) {
+                                    if (address != null) {
+                                      print('입력된 이더리움 주소: $address');
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
+
+                                      Provider.of<TokenHistoryService>(context,
+                                              listen: false)
+                                          .withdrawToken(address, userId)
+                                          .then((status) {
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                        Fluttertoast.showToast(
+                                          msg: status,
+                                          gravity: ToastGravity.CENTER,
+                                          fontSize: 20,
+                                          backgroundColor: Colors.black, //배경색
+                                          textColor: Colors.white, //글자색
+                                          toastLength: Toast.LENGTH_LONG,
+                                        );
+                                      });
+                                    } else {
+                                      print('입력이 취소되었습니다.');
+                                    }
+                                  });
+
+                                  /* showDialog(
+                                context: context,
+                                builder: (c) => AlertDialog(
+                                  title: Text("출금"),
+                                  content: TextField(),
+                                ),
+                              ); */
+                                },
                                 style: TextButton.styleFrom(
                                   textStyle: TextStyle(
                                     fontSize: 20,
@@ -111,11 +162,9 @@ class RewardPage extends StatelessWidget {
                             )
                           ]),
                         ),
-                      ),
-                    ),
-                  );
-                }),
-              ),
+                      );
+                    }),
+                  ),
       ),
     );
   }

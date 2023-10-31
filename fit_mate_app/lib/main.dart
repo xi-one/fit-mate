@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:ui';
-
 import 'package:fit_mate_app/pages/LoginPage.dart';
 import 'package:fit_mate_app/providers/CommentService.dart';
 import 'package:fit_mate_app/providers/ParticipantService.dart';
@@ -8,6 +5,7 @@ import 'package:fit_mate_app/providers/PostService.dart';
 import 'package:fit_mate_app/providers/TokenHistoryService.dart';
 import 'package:fit_mate_app/providers/UserService.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -40,6 +38,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: LoginPage(),
+        builder: FToastBuilder(),
       ),
     );
   }

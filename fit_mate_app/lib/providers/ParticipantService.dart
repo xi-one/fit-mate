@@ -34,7 +34,6 @@ class ParticipantService extends ChangeNotifier {
       if (participants == null) {
         return;
       }
-      print(participants);
 
       final List<Participant> loadedParticipants = [];
       participants.forEach((participant) {

@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:fit_mate_app/apiConstant.dart';
 import 'package:fit_mate_app/model/TokenHistory.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,7 +11,7 @@ class TokenHistoryService extends ChangeNotifier {
       userId: '1',
       amount: '300',
       content: '이건 테스트임',
-      date: DateTime.now(),
+      dateTime: DateTime.now(),
     ),
   ];
   final storage = FlutterSecureStorage();
@@ -18,10 +20,69 @@ class TokenHistoryService extends ChangeNotifier {
 
   List<TokenHistory> get items {
     _items.sort((a, b) {
-      return b.date!.compareTo(a.date!);
+      return b.dateTime!.compareTo(a.dateTime!);
     });
     return [..._items];
   }
 
-  Future<void> fetchAndSetHistory() async {}
+  Future<void> fetchAndSetHistory(String userId) async {
+    final token = await storage.read(key: "accessToken");
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ));
+
+    try {
+      final response = await dio.get("/reward/$userId");
+      print(response.data);
+      final HistoryList = response.data['historyList'];
+      final List<TokenHistory> loadedHistoryList = [];
+
+      HistoryList.forEach((history) {
+        loadedHistoryList.add(TokenHistory(
+          id: history['id'].toString(),
+          userId: history['userId'].toString(),
+          amount: history['amount'].toString(),
+          content: history['content'],
+          dateTime: DateTime.parse(history['dateTime']),
+        ));
+      });
+      _items = loadedHistoryList;
+      notifyListeners();
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<String> withdrawToken(String address, String userId) async {
+    final token = await storage.read(key: "accessToken");
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ));
+    Map<String, dynamic> data = {
+      'userId': int.parse(userId),
+      'address': address,
+    };
+    String result = '';
+    try {
+      final response = await dio.post("/reward/withdraw", data: data);
+      print(response.data);
+      result = response.data['status'];
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+
+    notifyListeners();
+    return result;
+  }
 }

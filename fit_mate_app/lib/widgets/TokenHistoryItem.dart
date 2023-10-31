@@ -13,7 +13,6 @@ class TokenHistoryItem extends StatelessWidget {
         Provider.of<TokenHistoryService>(context, listen: false).items;
     final historyIndex = history.indexWhere((history) => history.id == id);
     final historyItem = history[historyIndex];
-
     return ListTile(
       title: Text(
         historyItem.content!,
@@ -21,9 +20,9 @@ class TokenHistoryItem extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      subtitle: (DateTime.now().day - historyItem.date!.day >= 1)
-          ? Text(DateFormat('MM/dd').format(historyItem.date!))
-          : Text(DateFormat('HH:mm').format(historyItem.date!)),
+      subtitle: (DateTime.now().day - historyItem.dateTime!.day >= 1)
+          ? Text(DateFormat('MM/dd').format(historyItem.dateTime!))
+          : Text(DateFormat('HH:mm').format(historyItem.dateTime!)),
       trailing: Text(historyItem.amount!),
     );
   }

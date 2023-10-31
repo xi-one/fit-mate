@@ -55,11 +55,9 @@ class UserService extends ChangeNotifier {
 
     try {
       final response = await dio.get("/userinfo/$userId");
-      print("test");
       print(response.data);
 
       final user = response.data;
-      print(user['cash'].toString());
       if (user == null) {
         return;
       }

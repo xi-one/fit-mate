@@ -3,7 +3,8 @@ class TokenHistory {
   final String? userId;
   final String? amount;
   final String? content;
-  final DateTime? date;
+  final DateTime? dateTime;
 
-  TokenHistory({this.id, this.userId, this.amount, this.content, this.date});
+  TokenHistory(
+      {this.id, this.userId, this.amount, this.content, this.dateTime});
 }

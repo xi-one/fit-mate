@@ -1,4 +1,3 @@
-import 'package:fit_mate_app/model/Participant.dart';
 import 'package:fit_mate_app/providers/ParticipantService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
