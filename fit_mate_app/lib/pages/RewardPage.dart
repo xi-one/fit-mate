@@ -113,19 +113,23 @@ class _RewardPageState extends State<RewardPage> {
                                           textColor: Colors.white, //글자색
                                           toastLength: Toast.LENGTH_LONG,
                                         );
+                                      }).catchError((error) {
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                        Fluttertoast.showToast(
+                                          msg: error.toString(),
+                                          gravity: ToastGravity.BOTTOM,
+                                          fontSize: 20,
+                                          backgroundColor: Colors.black, //배경색
+                                          textColor: Colors.white, //글자색
+                                          toastLength: Toast.LENGTH_LONG,
+                                        );
                                       });
                                     } else {
                                       print('입력이 취소되었습니다.');
                                     }
                                   });
-
-                                  /* showDialog(
-                                context: context,
-                                builder: (c) => AlertDialog(
-                                  title: Text("출금"),
-                                  content: TextField(),
-                                ),
-                              ); */
                                 },
                                 style: TextButton.styleFrom(
                                   textStyle: TextStyle(
