@@ -97,4 +97,14 @@ class UserService extends ChangeNotifier {
 
     // 통신해서 유저 정보 가져오기
   }
+
+  void logout() {
+    _userId = null;
+    _imgUrl = null;
+    _name = null;
+    _email = null;
+    _location = null;
+    _cash = null;
+    _sex = null;
+  }
 }

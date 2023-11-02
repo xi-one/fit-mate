@@ -105,7 +105,7 @@ public class RewardController {
 
         tokenHistoryRepository.save(tokenHistory);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new StatusResponse("withdrawn successfully!"));
+        return ResponseEntity.status(HttpStatus.OK).body(new withdrawResponse("withdrawn successfully!", receipt.getTransactionHash()));
 
     }
 

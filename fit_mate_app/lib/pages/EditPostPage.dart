@@ -120,7 +120,7 @@ class _EditPostPageState extends State<EditPostPage> {
   }
 
   void _showModal(BuildContext context, String domain) async {
-    final sportsList = ['농구', '테니스', '축구', '배드민턴'];
+    final sportsList = ['농구', '테니스', '축구', '배드민턴', '헬스', '러닝', '야구', '배구'];
     final citiesList = ['서울/경기', '충북', '충남', '경북', '경남', '전북', '전남', '강원'];
     final numberList = List.generate(27, (index) => index + 3);
 

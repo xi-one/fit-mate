@@ -117,6 +117,22 @@ class MyPage extends StatelessWidget {
                         )
                       ],
                     ),
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                        Colors.red,
+                      )),
+                      child: Text(
+                        "로그아웃",
+                      ),
+                      onPressed: () {
+                        Provider.of<UserService>(context, listen: false)
+                            .logout();
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   )
                 ],
               )
