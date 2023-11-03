@@ -33,6 +33,7 @@ class _UserInfoState extends State<UserInfo> {
     Sports(id: 4, name: "러닝"),
     Sports(id: 5, name: "야구"),
     Sports(id: 6, name: "배드민턴"),
+    Sports(id: 7, name: "배구"),
   ];
   final _items = _sports
       .map((sports) => MultiSelectItem<Sports?>(sports, sports!.name))

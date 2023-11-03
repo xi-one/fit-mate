@@ -58,7 +58,8 @@ class TokenHistoryService extends ChangeNotifier {
     }
   }
 
-  Future<String> withdrawToken(String address, String userId) async {
+  Future<Map<String, dynamic>> withdrawToken(
+      String address, String userId) async {
     final token = await storage.read(key: "accessToken");
 
     Dio dio = Dio(BaseOptions(
@@ -72,17 +73,55 @@ class TokenHistoryService extends ChangeNotifier {
       'userId': int.parse(userId),
       'address': address,
     };
-    String result = '';
+    String status;
+    String? txHash;
     try {
       final response = await dio.post("/reward/withdraw", data: data);
       print(response.data);
-      result = response.data['status'];
+      status = response.data['status'];
+      if (response.data['txHash'] != null) {
+        txHash = response.data['txHash'];
+      }
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+    Map<String, dynamic> result = {
+      'status': status,
+      'txHash': txHash,
+    };
+
+    notifyListeners();
+    return result;
+  }
+
+  Future<void> rewardParticipant(
+      String userId, String receiverId, String postId) async {
+    print("rewardParticipant");
+    print("userId: $userId, receiverId: $receiverId, postId: $postId");
+    final token = await storage.read(key: "accessToken");
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ));
+    Map<String, dynamic> data = {
+      'userId': int.parse(userId),
+      'receiverUserId': int.parse(receiverId),
+      'postId': int.parse(postId),
+    };
+
+    try {
+      final response = await dio.post("/reward", data: data);
+      print(response.data);
     } catch (e) {
       print(e);
       throw e;
     }
 
     notifyListeners();
-    return result;
   }
 }

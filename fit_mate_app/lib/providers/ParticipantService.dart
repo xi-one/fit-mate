@@ -29,8 +29,8 @@ class ParticipantService extends ChangeNotifier {
 
     try {
       final response = await dio.get("/participant/$postId");
-
       final participants = response.data["participants"];
+
       if (participants == null) {
         return;
       }

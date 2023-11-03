@@ -3,6 +3,7 @@ import 'package:fit_mate_app/model/Participant.dart';
 import 'package:fit_mate_app/providers/CommentService.dart';
 import 'package:fit_mate_app/providers/ParticipantService.dart';
 import 'package:fit_mate_app/providers/PostService.dart';
+import 'package:fit_mate_app/providers/TokenHistoryService.dart';
 import 'package:fit_mate_app/providers/UserService.dart';
 import 'package:fit_mate_app/widgets/CommentItem.dart';
 import 'package:fit_mate_app/widgets/ParticipantItem.dart';
@@ -74,16 +75,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 children: <Widget>[
                   // 글쓴이, 작성시간
                   ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: CircleAvatar(
-                        backgroundColor: Color(0xffe6e6e6),
-                        child: Icon(
-                          Icons.person,
-                          color: Color(0xffcccccc),
-                        ),
-                      ),
-                    ),
+                    leading: post.imgUrl != null
+                        ? Image.network(
+                            post.imgUrl!,
+                            height: 200,
+                          )
+                        : Icon(
+                            Icons.person,
+                            color: Color(0xffcccccc),
+                          ),
                     title: Text(
                       post.writer!,
                       maxLines: 1,
@@ -206,8 +206,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         children: [
                           ParticipantItem(
                             participants[i].id,
-                            onRefresh: () {
-                              _refreshPosts(context, widget.id);
+                            post.userId,
+                            onRefresh: () async {
+                              await Provider.of<TokenHistoryService>(context,
+                                      listen: false)
+                                  .rewardParticipant(post.userId!,
+                                      participants[i].id!, post.id!);
+                              await _refreshPosts(context, widget.id);
                             },
                           ),
                           Divider(),
@@ -237,7 +242,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   if (post.isRecruiting!) {
                                     return Colors.green;
                                   } else {
-                                    return Colors.grey;
+                                    return Colors.white;
                                   }
                                 })),
                                 child: Text(
@@ -271,7 +276,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   if (post.isRecruiting!) {
                                     return Colors.lightBlue;
                                   } else {
-                                    return Colors.grey;
+                                    return Colors.white;
                                   }
                                 })),
                                 child: Text(

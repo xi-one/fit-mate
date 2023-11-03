@@ -5,6 +5,7 @@ import 'package:fit_mate_app/widgets/TokenHistoryItem.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// 세 번째 페이지
 class RewardPage extends StatefulWidget {
@@ -101,13 +102,58 @@ class _RewardPageState extends State<RewardPage> {
                                       Provider.of<TokenHistoryService>(context,
                                               listen: false)
                                           .withdrawToken(address, userId)
-                                          .then((status) {
+                                          .then((result) {
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+
+                                        showDialog<String>(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                  result['txHash'] == null
+                                                      ? '출금 실패'
+                                                      : '출금 성공'),
+                                              content: Text(result['status']),
+                                              actions: result['txHash'] == null
+                                                  ? <Widget>[
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text('확인'),
+                                                      ),
+                                                    ]
+                                                  : <Widget>[
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text('확인'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          launchUrl(
+                                                            Uri.parse(
+                                                                'https://mumbai.polygonscan.com/tx/${result["txHash"]}'),
+                                                          );
+                                                        },
+                                                        child: Text('TX 확인'),
+                                                      )
+                                                    ],
+                                            );
+                                          },
+                                        );
+                                      }).catchError((error) {
                                         setState(() {
                                           _isLoading = false;
                                         });
                                         Fluttertoast.showToast(
-                                          msg: status,
-                                          gravity: ToastGravity.CENTER,
+                                          msg: error.toString(),
+                                          gravity: ToastGravity.BOTTOM,
                                           fontSize: 20,
                                           backgroundColor: Colors.black, //배경색
                                           textColor: Colors.white, //글자색
@@ -118,14 +164,6 @@ class _RewardPageState extends State<RewardPage> {
                                       print('입력이 취소되었습니다.');
                                     }
                                   });
-
-                                  /* showDialog(
-                                context: context,
-                                builder: (c) => AlertDialog(
-                                  title: Text("출금"),
-                                  content: TextField(),
-                                ),
-                              ); */
                                 },
                                 style: TextButton.styleFrom(
                                   textStyle: TextStyle(

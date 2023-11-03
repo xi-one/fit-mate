@@ -95,6 +95,7 @@ public class BoardPostController {
             postInfo.add(new PostDetailResponse(
                     post.getId(),
                     post.getUserId().getId(),
+                    post.getUserId().getImg(),
                     post.getUserId().getName(),
                     post.getTitle(),
                     post.getContent(),
@@ -122,6 +123,7 @@ public class BoardPostController {
             postInfo.add(new PostDetailResponse(
                     post.getId(),
                     post.getUserId().getId(),
+                    post.getUserId().getImg(),
                     post.getUserId().getName(),
                     post.getTitle(),
                     post.getContent(),
@@ -148,6 +150,7 @@ public class BoardPostController {
             postInfo.add(new PostDetailResponse(
                     post.getId(),
                     post.getUserId().getId(),
+                    post.getUserId().getImg(),
                     post.getUserId().getName(),
                     post.getTitle(),
                     post.getContent(),
