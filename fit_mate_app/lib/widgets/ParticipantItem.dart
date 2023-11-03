@@ -1,6 +1,4 @@
-import 'package:fit_mate_app/model/TokenHistory.dart';
 import 'package:fit_mate_app/providers/ParticipantService.dart';
-import 'package:fit_mate_app/providers/TokenHistoryService.dart';
 import 'package:fit_mate_app/providers/UserService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

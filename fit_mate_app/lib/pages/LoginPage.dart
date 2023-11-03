@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:fit_mate_app/apiConstant.dart';
 import 'package:fit_mate_app/pages/FramePage.dart';
 import 'package:fit_mate_app/pages/UserInfo.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +34,8 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> signIn() async {
     // 고유한 redirect uri
     const APP_REDIRECT_URI = "com.example.fit-mate-app";
-
     // 백엔드에서 미리 작성된 API 호출
-    final url =
-        Uri.parse('http://10.0.2.2.nip.io:8080/oauth2/authorize/google');
+    final url = Uri.parse('${ApiConstants.baseUrl}/oauth2/authorize/google');
 
     try {
       // 백엔드가 제공한 로그인 페이지에서 로그인 후 callback 데이터 반환
